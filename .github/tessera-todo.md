@@ -83,7 +83,7 @@ The MVP is complete when:
 - [ ] user can execute a basic swap flow
 - [ ] user can see balances before and after swap
 - [ ] user can see transaction state and feedback
-- [ ] app is consistently styled in the Tessera Deep Ocean design system
+- [ ] app is consistently styled in the Tessera Rose Liquid Glass design system
 - [ ] repository is documented and demo-ready
 
 ### 1.3 Product principles
@@ -108,12 +108,12 @@ The MVP is complete when:
 ## 2. Repository setup
 
 ### 2.1 GitHub foundation
-- [x] create and configure repository `tessera-dex`
+- [ ] create and configure repository `tessera-dex`
 - [ ] add repository description
 - [ ] add license
-- [x] add `.gitignore`
-- [x] add `.editorconfig`
-- [x] add `.env.example`
+- [ ] add `.gitignore`
+- [ ] add `.editorconfig`
+- [ ] add `.env.example`
 - [ ] add issue templates
 - [ ] add pull request template
 - [ ] add branch strategy documentation
@@ -138,52 +138,54 @@ The MVP is complete when:
 ## 3. Technical architecture
 
 ### 3.1 Stack lock
-- [x] Next.js App Router
-- [x] React
-- [x] TypeScript strict mode
-- [x] Tailwind CSS
-- [x] shadcn/ui
-- [x] framer-motion
-- [x] wagmi v2
-- [x] viem
-- [x] RainbowKit
-- [x] lightweight-charts
-- [x] Lucide icons
+- [ ] Next.js App Router
+- [ ] React
+- [ ] TypeScript strict mode
+- [ ] Tailwind CSS
+- [ ] shadcn/ui
+- [ ] framer-motion
+- [ ] wagmi v2
+- [ ] viem
+- [ ] RainbowKit
+- [ ] lightweight-charts
+- [ ] Lucide icons
 
 ### 3.2 Architecture rules
-- [x] use modular feature-based structure
+- [ ] use modular feature-based structure
 - [ ] keep Web3 logic out of presentational components
 - [ ] centralize chain config and contract config
 - [ ] centralize token metadata
 - [ ] centralize formatting utilities
-- [x] use semantic design tokens instead of raw hex codes
+- [ ] use semantic design tokens instead of raw hex codes
 - [ ] use reusable typed adapters for all contract interactions
 
 ### 3.3 Target directory structure
-- [x] establish the following structure:
+- [ ] establish the following structure:
 
-      src/
-        app/
-        components/
-          ui/
-          layout/
-          shared/
-        features/
-          swap/
-          markets/
-          portfolio/
-          charts/
-        web3/
-          abis/
-          config/
-          hooks/
-          adapters/
-          constants/
-        lib/
-        hooks/
-        styles/
-        types/
-        data/
+```txt
+src/
+  app/
+  components/
+    ui/
+    layout/
+    shared/
+  features/
+    swap/
+    markets/
+    portfolio/
+    charts/
+  web3/
+    abis/
+    config/
+    hooks/
+    adapters/
+    constants/
+  lib/
+  hooks/
+  styles/
+  types/
+  data/
+```
 
 ### 3.4 Code conventions
 - [ ] strict TypeScript, no `any`
@@ -202,101 +204,108 @@ The MVP is complete when:
 ## 4. Bootstrapping the app
 
 ### 4.1 Initial scaffolding
-- [x] initialize Next.js application
-- [x] enable TypeScript strict mode
-- [x] setup Tailwind CSS
-- [x] setup ESLint
-- [x] setup Prettier
+- [ ] initialize Next.js application
+- [ ] enable TypeScript strict mode
+- [ ] setup Tailwind CSS
+- [ ] setup ESLint
+- [ ] setup Prettier
 - [ ] setup import ordering rules
-- [x] setup path aliases
+- [ ] setup path aliases
 - [ ] setup Husky or equivalent pre-commit hooks if time allows
 
 ### 4.2 shadcn/ui foundation
-- [x] initialize shadcn/ui
-- [x] install core components
-- [x] map theme tokens to Deep Ocean palette
-- [x] validate dark mode styles across components
+- [ ] initialize shadcn/ui
+- [ ] install core components
+- [x] map theme tokens to Rose Liquid Glass palette
+- [ ] validate dark mode styles across components
 
 ### 4.3 Base scripts
-- [x] define `dev`
-- [x] define `build`
-- [x] define `lint`
-- [x] define `typecheck`
+- [ ] define `dev`
+- [ ] define `build`
+- [ ] define `lint`
+- [ ] define `typecheck`
 - [ ] define `test`
-- [x] define `format`
+- [ ] define `format`
 
 ---
 
-## 5. Deep Ocean design system
+## 5. Rose Liquid Glass design system
 
 ### 5.1 Brand identity
 - [x] lock product name as `Tessera`
-- [x] define one-line tagline
-- [x] define concise product subtitle
-- [x] define brand tone: precise, calm, institutional, premium
-- [x] avoid flashy crypto aesthetics
+- [ ] define one-line tagline
+- [ ] define concise product subtitle
+- [ ] define brand tone: premium, glossy, modern, feminine but sharp
+- [x] apply premium pink liquid glass aesthetics
 
 ### 5.2 Color tokens
 - [x] implement semantic tokens
-- [x] set `bg.primary = #0A1A2F`
-- [x] set `bg.panel = #1B3355`
-- [x] set `border.subtle = #4B6177`
-- [x] set `brand.primary = #2EC4B6`
-- [x] set `brand.secondary = #0077BE`
-- [x] set `state.positive = #00E676`
-- [x] set `state.negative = #C33F45`
-- [x] set `text.primary = #E6EAEE`
-- [x] set `text.secondary = #A7B2BC`
+- [x] set `bg.primary = #0F0A14`
+- [x] set `bg.secondary = #16101D`
+- [x] set `bg.panel = rgba(34, 22, 44, 0.72)`
+- [x] set `bg.elevated = rgba(46, 29, 58, 0.82)`
+- [x] set `border.subtle = rgba(255, 255, 255, 0.10)`
+- [x] set `border.strong = rgba(255, 182, 221, 0.22)`
+- [x] set `brand.primary = #FF4FA3`
+- [x] set `brand.secondary = #FF8CC8`
+- [x] set `brand.tertiary = #D946EF`
+- [x] set `glow.primary = rgba(255, 79, 163, 0.35)`
+- [x] set `glow.secondary = rgba(217, 70, 239, 0.25)`
+- [x] set `state.positive = #2EE6A6`
+- [x] set `state.negative = #FF5C7A`
+- [x] set `text.primary = #FFF4FB`
+- [x] set `text.secondary = #D8C7D9`
+- [x] set `text.muted = #A892AD`
 
 ### 5.3 Typography and spacing
-- [x] define typography scale
-- [x] define spacing scale
-- [x] define border radius scale
-- [x] define focus ring styles
-- [x] define card shadow policy
+- [ ] define typography scale
+- [ ] define spacing scale
+- [ ] define border radius scale
+- [ ] define focus ring styles (soft pink glow)
+- [ ] define card shadow and blur policy
 - [ ] define table density rules
-- [x] define mobile spacing adjustments
+- [ ] define mobile spacing adjustments
 
 ### 5.4 Reusable UI primitives
-- [x] button variants
-- [x] input variants
-- [x] card variants
-- [x] badge variants
-- [x] tabs
+- [ ] button variants
+- [ ] input variants
+- [ ] card variants
+- [ ] badge variants
+- [ ] tabs
 - [ ] table shell
-- [x] modal/dialog
-- [x] tooltip
-- [x] dropdown/select
-- [x] toast system
-- [x] skeleton loaders
-- [x] empty state
-- [x] error state
+- [ ] modal/dialog
+- [ ] tooltip
+- [ ] dropdown/select
+- [ ] toast system
+- [ ] skeleton loaders
+- [ ] empty state
+- [ ] error state
 
 ---
 
 ## 6. Layout and navigation
 
 ### 6.1 App shell
-- [x] create root layout
-- [x] apply global theme
-- [x] add background and typography styles
-- [x] create dashboard grid
-- [x] define content width constraints
+- [ ] create root layout
+- [ ] apply global theme
+- [ ] add background and typography styles
+- [ ] create dashboard grid
+- [ ] define content width constraints
 
 ### 6.2 Top navigation
-- [x] Tessera logo area
-- [x] network status
-- [x] wallet connect area
+- [ ] Tessera logo area
+- [ ] network status
+- [ ] wallet connect area
 - [ ] market overview quick stats
-- [x] responsive collapse behavior
+- [ ] responsive collapse behavior
 
 ### 6.3 Navigation model
-- [x] define main sections
-- [x] add navigation for Swap
-- [x] add navigation for Markets
-- [x] add navigation for Portfolio
-- [x] add navigation for History
-- [x] add mobile-friendly navigation state
+- [ ] define main sections
+- [ ] add navigation for Swap
+- [ ] add navigation for Markets
+- [ ] add navigation for Portfolio
+- [ ] add navigation for History
+- [ ] add mobile-friendly navigation state
 
 ---
 
@@ -442,7 +451,7 @@ The MVP is complete when:
 - [ ] support dynamic timeframe changes
 
 ### 11.2 Chart theming
-- [ ] apply Deep Ocean background
+- [ ] apply Rose-black background
 - [ ] apply semantic candle colors
 - [ ] tone down grid opacity
 - [ ] style axes with muted text color
@@ -680,19 +689,19 @@ The MVP is complete when:
 ## 19. Suggested execution order
 
 ### Phase 1 — foundation
-- [x] repo setup
-- [x] app scaffold
-- [x] lint/type/build pipeline
-- [x] architecture folders
+- [ ] repo setup
+- [ ] app scaffold
+- [ ] lint/type/build pipeline
+- [ ] architecture folders
 - [x] design tokens
 - [x] shadcn theme alignment
 
 ### Phase 2 — UI shell
-- [x] layout
-- [x] header
-- [x] navigation
-- [x] core primitives
-- [x] dashboard structure
+- [ ] layout
+- [ ] header
+- [ ] navigation
+- [ ] core primitives
+- [ ] dashboard structure
 
 ### Phase 3 — mock product
 - [ ] markets table with mock data

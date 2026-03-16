@@ -4,57 +4,75 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ─── Cyber Precision Design Tokens ────────────────────────────────────────── */
+/* ─── Rose Liquid Glass Design Tokens ──────────────────────────────────────── */
 :root {
-  /* Tessera semantic tokens — Cyber Precision */
-  --bg-primary: #080b14;
-  --bg-panel: #0e1425;
-  --bg-elevated: #131b2e;
-  --border-subtle: #1e2d4a;
-  --brand-primary: #7c91ff;
-  --brand-secondary: #4c65ff;
-  --state-positive: #4ade80;
-  --state-negative: #ff4f6a;
-  --text-primary: #cdd6f4;
-  --text-secondary: #6b7ca8;
+  /* Tessera semantic tokens — Rose Liquid Glass */
 
-  /* shadcn/ui token mapping → Cyber Precision */
-  --background: #080b14;
-  --foreground: #cdd6f4;
-  --card: #0e1425;
-  --card-foreground: #cdd6f4;
-  --popover: #0e1425;
-  --popover-foreground: #cdd6f4;
-  --primary: #7c91ff;
-  --primary-foreground: #080b14;
-  --secondary: #131b2e;
-  --secondary-foreground: #cdd6f4;
-  --muted: #131b2e;
-  --muted-foreground: #6b7ca8;
-  --accent: #4c65ff;
-  --accent-foreground: #cdd6f4;
-  --destructive: #ff4f6a;
-  --border: #1e2d4a;
-  --input: #1e2d4a;
-  --ring: #7c91ff;
-  --radius: 0.25rem;
+  /* Backgrounds */
+  --bg-primary: #0F0A14;
+  --bg-secondary: #16101D;
+  --bg-panel: rgba(34, 22, 44, 0.72);
+  --bg-elevated: rgba(46, 29, 58, 0.82);
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 182, 221, 0.22);
+
+  /* Brand */
+  --brand-primary: #FF4FA3;
+  --brand-secondary: #FF8CC8;
+  --brand-tertiary: #D946EF;
+
+  /* Glow */
+  --glow-primary: rgba(255, 79, 163, 0.35);
+  --glow-secondary: rgba(217, 70, 239, 0.25);
+
+  /* Semantic market states */
+  --state-positive: #2EE6A6;
+  --state-negative: #FF5C7A;
+
+  /* Typography */
+  --text-primary: #FFF4FB;
+  --text-secondary: #D8C7D9;
+  --text-muted: #A892AD;
+
+  /* shadcn/ui token mapping → Rose Liquid Glass */
+  --background: #0F0A14;
+  --foreground: #FFF4FB;
+  --card: rgba(34, 22, 44, 0.72);
+  --card-foreground: #FFF4FB;
+  --popover: rgba(46, 29, 58, 0.90);
+  --popover-foreground: #FFF4FB;
+  --primary: #FF4FA3;
+  --primary-foreground: #0F0A14;
+  --secondary: rgba(46, 29, 58, 0.82);
+  --secondary-foreground: #D8C7D9;
+  --muted: rgba(34, 22, 44, 0.60);
+  --muted-foreground: #A892AD;
+  --accent: #D946EF;
+  --accent-foreground: #FFF4FB;
+  --destructive: #FF5C7A;
+  --border: rgba(255, 255, 255, 0.10);
+  --input: rgba(255, 255, 255, 0.07);
+  --ring: #FF4FA3;
+  --radius: 0.5rem;
 
   /* Chart semantic tokens */
-  --chart-1: #7c91ff;
-  --chart-2: #4ade80;
-  --chart-3: #ff4f6a;
-  --chart-4: #f9c846;
-  --chart-5: #6b7ca8;
+  --chart-1: #FF4FA3;
+  --chart-2: #2EE6A6;
+  --chart-3: #FF5C7A;
+  --chart-4: #FF8CC8;
+  --chart-5: #A892AD;
 
   /* Sidebar */
-  --sidebar: #0e1425;
-  --sidebar-foreground: #cdd6f4;
-  --sidebar-primary: #7c91ff;
-  --sidebar-primary-foreground: #080b14;
-  --sidebar-accent: #131b2e;
-  --sidebar-accent-foreground: #cdd6f4;
-  --sidebar-border: #1e2d4a;
-  --sidebar-ring: #7c91ff;
+  --sidebar: rgba(34, 22, 44, 0.90);
+  --sidebar-foreground: #FFF4FB;
+  --sidebar-primary: #FF4FA3;
+  --sidebar-primary-foreground: #0F0A14;
+  --sidebar-accent: rgba(46, 29, 58, 0.82);
+  --sidebar-accent-foreground: #D8C7D9;
+  --sidebar-border: rgba(255, 255, 255, 0.10);
+  --sidebar-ring: #FF4FA3;
 }
 
 @theme inline {
@@ -62,15 +80,21 @@
 
   /* Tessera semantic utilities */
   --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
   --color-bg-panel: var(--bg-panel);
   --color-bg-elevated: var(--bg-elevated);
   --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
   --color-brand-primary: var(--brand-primary);
   --color-brand-secondary: var(--brand-secondary);
+  --color-brand-tertiary: var(--brand-tertiary);
+  --color-glow-primary: var(--glow-primary);
+  --color-glow-secondary: var(--glow-secondary);
   --color-state-positive: var(--state-positive);
   --color-state-negative: var(--state-negative);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
 
   /* shadcn/ui color tokens */
   --color-background: var(--background);
@@ -133,17 +157,28 @@
 }
 
 @layer utilities {
-  /* Subtle indigo glow for interactive / active elements */
-  .glow-accent {
-    box-shadow: 0 0 16px rgba(124, 145, 255, 0.18);
+  /* Rose pink glow — use on active/focused elements */
+  .glow-brand {
+    box-shadow: 0 0 20px var(--glow-primary);
   }
 
-  .glow-accent-sm {
-    box-shadow: 0 0 8px rgba(124, 145, 255, 0.12);
+  .glow-brand-sm {
+    box-shadow: 0 0 10px rgba(255, 79, 163, 0.22);
   }
 
-  /* Inset top border highlight — cyber panel feel */
+  /* Liquid glass surface — use on cards, nav, modals, dropdowns */
+  .glass-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* Inset top border — rose pink highlight for panels */
   .border-top-accent {
-    border-top: 1px solid rgba(124, 145, 255, 0.35);
+    border-top: 1px solid var(--border-strong);
   }
 }
