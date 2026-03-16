@@ -249,54 +249,54 @@ The MVP is complete when:
 - [x] set `text.secondary = #A7B2BC`
 
 ### 5.3 Typography and spacing
-- [ ] define typography scale
-- [ ] define spacing scale
-- [ ] define border radius scale
-- [ ] define focus ring styles
-- [ ] define card shadow policy
+- [x] define typography scale
+- [x] define spacing scale
+- [x] define border radius scale
+- [x] define focus ring styles
+- [x] define card shadow policy
 - [ ] define table density rules
-- [ ] define mobile spacing adjustments
+- [x] define mobile spacing adjustments
 
 ### 5.4 Reusable UI primitives
-- [ ] button variants
-- [ ] input variants
-- [ ] card variants
-- [ ] badge variants
-- [ ] tabs
+- [x] button variants
+- [x] input variants
+- [x] card variants
+- [x] badge variants
+- [x] tabs
 - [ ] table shell
-- [ ] modal/dialog
-- [ ] tooltip
-- [ ] dropdown/select
-- [ ] toast system
-- [ ] skeleton loaders
-- [ ] empty state
-- [ ] error state
+- [x] modal/dialog
+- [x] tooltip
+- [x] dropdown/select
+- [x] toast system
+- [x] skeleton loaders
+- [x] empty state
+- [x] error state
 
 ---
 
 ## 6. Layout and navigation
 
 ### 6.1 App shell
-- [ ] create root layout
-- [ ] apply global theme
-- [ ] add background and typography styles
-- [ ] create dashboard grid
-- [ ] define content width constraints
+- [x] create root layout
+- [x] apply global theme
+- [x] add background and typography styles
+- [x] create dashboard grid
+- [x] define content width constraints
 
 ### 6.2 Top navigation
-- [ ] Tessera logo area
-- [ ] network status
-- [ ] wallet connect area
+- [x] Tessera logo area
+- [x] network status
+- [x] wallet connect area
 - [ ] market overview quick stats
-- [ ] responsive collapse behavior
+- [x] responsive collapse behavior
 
 ### 6.3 Navigation model
-- [ ] define main sections
-- [ ] add navigation for Swap
-- [ ] add navigation for Markets
-- [ ] add navigation for Portfolio
-- [ ] add navigation for History
-- [ ] add mobile-friendly navigation state
+- [x] define main sections
+- [x] add navigation for Swap
+- [x] add navigation for Markets
+- [x] add navigation for Portfolio
+- [x] add navigation for History
+- [x] add mobile-friendly navigation state
 
 ---
 
@@ -688,11 +688,11 @@ The MVP is complete when:
 - [x] shadcn theme alignment
 
 ### Phase 2 — UI shell
-- [ ] layout
-- [ ] header
-- [ ] navigation
-- [ ] core primitives
-- [ ] dashboard structure
+- [x] layout
+- [x] header
+- [x] navigation
+- [x] core primitives
+- [x] dashboard structure
 
 ### Phase 3 — mock product
 - [ ] markets table with mock data

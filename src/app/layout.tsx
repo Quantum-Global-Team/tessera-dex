@@ -3,6 +3,8 @@ import { Inter, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AppShell } from "@/components/layout/AppShell"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -33,7 +35,11 @@ export default function RootLayout({
           "font-sans",
         )}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <AppShell>{children}</AppShell>
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
