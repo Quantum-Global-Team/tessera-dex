@@ -13,24 +13,31 @@ Your code must be production-ready, highly modular, strictly typed, and optimize
 # 1. Project Architecture & Directory Structure
 Follow a modular, feature-based architecture to separate concerns. Do NOT put blockchain logic inside UI components.
 
+## Overall Monorepo-style structure (Flat Root)
 ```text
-src/
-├── app/                  # Next.js App Router (pages, layouts, route handlers)
-├── components/
-│   ├── ui/               # Dumb, reusable shadcn/ui components (buttons, inputs)
-│   ├── layout/           # Header, Footer, Sidebar, Page wrappers
-│   └── shared/           # Shared cross-feature components (e.g., TokenIcon)
-├── features/             # Feature-based modules (Domain Logic)
-│   ├── swap/             # Swap widget, slippage settings, routing logic
-│   ├── markets/          # Market tables, asset lists
-│   └── charts/           # TradingView wrappers, price history logic
-├── hooks/                # Global React hooks (e.g., useMediaQuery)
-├── web3/                 # ALL Blockchain interactions live here
-│   ├── abis/             # JSON ABIs for Smart Contracts
-│   ├── config/           # Wagmi & RainbowKit configurations, chains (Polkadot EVM)
-│   └── hooks/            # Custom wrappers around wagmi (e.g., useTokenBalance, useSwapTx)
-├── lib/                  # Utility functions (formatting, math, constants)
-└── types/                # Global TypeScript interfaces
+TESSERA-DEX/
+├── contracts/                # Blockchain environment (Foundry)
+│   ├── src/                  # Solidity (.sol) smart contracts
+│   ├── test/                 # Foundry tests
+│   ├── script/               # Deployment scripts
+│   └── foundry.toml          # Foundry configuration
+├── src/                      # Frontend environment (Next.js)
+│   ├── app/                  # Next.js App Router (pages, layouts, route handlers)
+│   ├── components/
+│   │   ├── ui/               # Dumb, reusable shadcn/ui components
+│   │   ├── layout/           # Header, Footer, Sidebar
+│   │   └── shared/           # Cross-feature components (e.g., TokenIcon)
+│   ├── features/             # Feature-based modules (Domain Logic)
+│   │   ├── swap/             # Swap widget, slippage logic
+│   │   ├── markets/          # Market tables, asset lists
+│   │   └── charts/           # TradingView wrappers
+│   ├── hooks/                # Global React hooks
+│   ├── web3/                 # ALL Blockchain interactions live here
+│   │   ├── abis/             # JSON ABIs for Smart Contracts (copied from contracts/out)
+│   │   ├── config/           # Wagmi & RainbowKit configurations, chains (Polkadot EVM)
+│   │   └── hooks/            # Custom wrappers around wagmi (e.g., useTokenBalance)
+│   ├── lib/                  # Utility functions
+│   └── types/                # Global TypeScript interfaces
 ```
 
 # 2. Code Style & Best Practices

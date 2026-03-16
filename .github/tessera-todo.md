@@ -108,12 +108,12 @@ The MVP is complete when:
 ## 2. Repository setup
 
 ### 2.1 GitHub foundation
-- [ ] create and configure repository `tessera-dex`
+- [x] create and configure repository `tessera-dex`
 - [ ] add repository description
 - [ ] add license
-- [ ] add `.gitignore`
-- [ ] add `.editorconfig`
-- [ ] add `.env.example`
+- [x] add `.gitignore`
+- [x] add `.editorconfig`
+- [x] add `.env.example`
 - [ ] add issue templates
 - [ ] add pull request template
 - [ ] add branch strategy documentation
@@ -138,29 +138,29 @@ The MVP is complete when:
 ## 3. Technical architecture
 
 ### 3.1 Stack lock
-- [ ] Next.js App Router
-- [ ] React
-- [ ] TypeScript strict mode
-- [ ] Tailwind CSS
-- [ ] shadcn/ui
-- [ ] framer-motion
-- [ ] wagmi v2
-- [ ] viem
-- [ ] RainbowKit
-- [ ] lightweight-charts
-- [ ] Lucide icons
+- [x] Next.js App Router
+- [x] React
+- [x] TypeScript strict mode
+- [x] Tailwind CSS
+- [x] shadcn/ui
+- [x] framer-motion
+- [x] wagmi v2
+- [x] viem
+- [x] RainbowKit
+- [x] lightweight-charts
+- [x] Lucide icons
 
 ### 3.2 Architecture rules
-- [ ] use modular feature-based structure
+- [x] use modular feature-based structure
 - [ ] keep Web3 logic out of presentational components
 - [ ] centralize chain config and contract config
 - [ ] centralize token metadata
 - [ ] centralize formatting utilities
-- [ ] use semantic design tokens instead of raw hex codes
+- [x] use semantic design tokens instead of raw hex codes
 - [ ] use reusable typed adapters for all contract interactions
 
 ### 3.3 Target directory structure
-- [ ] establish the following structure:
+- [x] establish the following structure:
 
       src/
         app/
@@ -202,51 +202,51 @@ The MVP is complete when:
 ## 4. Bootstrapping the app
 
 ### 4.1 Initial scaffolding
-- [ ] initialize Next.js application
-- [ ] enable TypeScript strict mode
-- [ ] setup Tailwind CSS
-- [ ] setup ESLint
-- [ ] setup Prettier
+- [x] initialize Next.js application
+- [x] enable TypeScript strict mode
+- [x] setup Tailwind CSS
+- [x] setup ESLint
+- [x] setup Prettier
 - [ ] setup import ordering rules
-- [ ] setup path aliases
+- [x] setup path aliases
 - [ ] setup Husky or equivalent pre-commit hooks if time allows
 
 ### 4.2 shadcn/ui foundation
-- [ ] initialize shadcn/ui
-- [ ] install core components
-- [ ] map theme tokens to Deep Ocean palette
-- [ ] validate dark mode styles across components
+- [x] initialize shadcn/ui
+- [x] install core components
+- [x] map theme tokens to Deep Ocean palette
+- [x] validate dark mode styles across components
 
 ### 4.3 Base scripts
-- [ ] define `dev`
-- [ ] define `build`
-- [ ] define `lint`
-- [ ] define `typecheck`
+- [x] define `dev`
+- [x] define `build`
+- [x] define `lint`
+- [x] define `typecheck`
 - [ ] define `test`
-- [ ] define `format`
+- [x] define `format`
 
 ---
 
 ## 5. Deep Ocean design system
 
 ### 5.1 Brand identity
-- [ ] lock product name as `Tessera`
-- [ ] define one-line tagline
-- [ ] define concise product subtitle
-- [ ] define brand tone: precise, calm, institutional, premium
-- [ ] avoid flashy crypto aesthetics
+- [x] lock product name as `Tessera`
+- [x] define one-line tagline
+- [x] define concise product subtitle
+- [x] define brand tone: precise, calm, institutional, premium
+- [x] avoid flashy crypto aesthetics
 
 ### 5.2 Color tokens
-- [ ] implement semantic tokens
-- [ ] set `bg.primary = #0A1A2F`
-- [ ] set `bg.panel = #1B3355`
-- [ ] set `border.subtle = #4B6177`
-- [ ] set `brand.primary = #2EC4B6`
-- [ ] set `brand.secondary = #0077BE`
-- [ ] set `state.positive = #00E676`
-- [ ] set `state.negative = #C33F45`
-- [ ] set `text.primary = #E6EAEE`
-- [ ] set `text.secondary = #A7B2BC`
+- [x] implement semantic tokens
+- [x] set `bg.primary = #0A1A2F`
+- [x] set `bg.panel = #1B3355`
+- [x] set `border.subtle = #4B6177`
+- [x] set `brand.primary = #2EC4B6`
+- [x] set `brand.secondary = #0077BE`
+- [x] set `state.positive = #00E676`
+- [x] set `state.negative = #C33F45`
+- [x] set `text.primary = #E6EAEE`
+- [x] set `text.secondary = #A7B2BC`
 
 ### 5.3 Typography and spacing
 - [ ] define typography scale
@@ -680,12 +680,12 @@ The MVP is complete when:
 ## 19. Suggested execution order
 
 ### Phase 1 — foundation
-- [ ] repo setup
-- [ ] app scaffold
-- [ ] lint/type/build pipeline
-- [ ] architecture folders
-- [ ] design tokens
-- [ ] shadcn theme alignment
+- [x] repo setup
+- [x] app scaffold
+- [x] lint/type/build pipeline
+- [x] architecture folders
+- [x] design tokens
+- [x] shadcn theme alignment
 
 ### Phase 2 — UI shell
 - [ ] layout
