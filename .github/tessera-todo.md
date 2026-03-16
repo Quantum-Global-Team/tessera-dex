@@ -138,17 +138,17 @@ The MVP is complete when:
 ## 3. Technical architecture
 
 ### 3.1 Stack lock
-- [ ] Next.js App Router
-- [ ] React
-- [ ] TypeScript strict mode
-- [ ] Tailwind CSS
-- [ ] shadcn/ui
-- [ ] framer-motion
-- [ ] wagmi v2
-- [ ] viem
-- [ ] RainbowKit
-- [ ] lightweight-charts
-- [ ] Lucide icons
+- [x] Next.js App Router
+- [x] React
+- [x] TypeScript strict mode
+- [x] Tailwind CSS
+- [x] shadcn/ui
+- [x] framer-motion
+- [x] wagmi v2
+- [x] viem
+- [x] RainbowKit
+- [x] lightweight-charts
+- [x] Lucide icons
 
 ### 3.2 Architecture rules
 - [ ] use modular feature-based structure
@@ -160,7 +160,7 @@ The MVP is complete when:
 - [ ] use reusable typed adapters for all contract interactions
 
 ### 3.3 Target directory structure
-- [ ] establish the following structure:
+- [x] establish the following structure:
 
 ```txt
 src/
@@ -204,28 +204,28 @@ src/
 ## 4. Bootstrapping the app
 
 ### 4.1 Initial scaffolding
-- [ ] initialize Next.js application
-- [ ] enable TypeScript strict mode
-- [ ] setup Tailwind CSS
-- [ ] setup ESLint
-- [ ] setup Prettier
+- [x] initialize Next.js application
+- [x] enable TypeScript strict mode
+- [x] setup Tailwind CSS
+- [x] setup ESLint
+- [x] setup Prettier
 - [ ] setup import ordering rules
-- [ ] setup path aliases
+- [x] setup path aliases
 - [ ] setup Husky or equivalent pre-commit hooks if time allows
 
 ### 4.2 shadcn/ui foundation
-- [ ] initialize shadcn/ui
-- [ ] install core components
+- [x] initialize shadcn/ui
+- [x] install core components
 - [x] map theme tokens to Rose Liquid Glass palette
-- [ ] validate dark mode styles across components
+- [x] validate dark mode styles across components
 
 ### 4.3 Base scripts
-- [ ] define `dev`
-- [ ] define `build`
-- [ ] define `lint`
-- [ ] define `typecheck`
+- [x] define `dev`
+- [x] define `build`
+- [x] define `lint`
+- [x] define `typecheck`
 - [ ] define `test`
-- [ ] define `format`
+- [x] define `format`
 
 ---
 
@@ -286,25 +286,25 @@ src/
 ## 6. Layout and navigation
 
 ### 6.1 App shell
-- [ ] create root layout
-- [ ] apply global theme
-- [ ] add background and typography styles
-- [ ] create dashboard grid
-- [ ] define content width constraints
+- [x] create root layout
+- [x] apply global theme
+- [x] add background and typography styles
+- [x] create dashboard grid
+- [x] define content width constraints
 
 ### 6.2 Top navigation
-- [ ] Tessera logo area
-- [ ] network status
-- [ ] wallet connect area
+- [x] Tessera logo area
+- [x] network status
+- [x] wallet connect area
 - [ ] market overview quick stats
 - [ ] responsive collapse behavior
 
 ### 6.3 Navigation model
-- [ ] define main sections
-- [ ] add navigation for Swap
-- [ ] add navigation for Markets
-- [ ] add navigation for Portfolio
-- [ ] add navigation for History
+- [x] define main sections
+- [x] add navigation for Swap
+- [x] add navigation for Markets
+- [x] add navigation for Portfolio
+- [x] add navigation for History
 - [ ] add mobile-friendly navigation state
 
 ---
@@ -689,19 +689,19 @@ src/
 ## 19. Suggested execution order
 
 ### Phase 1 — foundation
-- [ ] repo setup
-- [ ] app scaffold
-- [ ] lint/type/build pipeline
-- [ ] architecture folders
+- [x] repo setup
+- [x] app scaffold
+- [x] lint/type/build pipeline
+- [x] architecture folders
 - [x] design tokens
 - [x] shadcn theme alignment
 
 ### Phase 2 — UI shell
-- [ ] layout
-- [ ] header
-- [ ] navigation
-- [ ] core primitives
-- [ ] dashboard structure
+- [x] layout
+- [x] header
+- [x] navigation
+- [x] core primitives
+- [x] dashboard structure
 
 ### Phase 3 — mock product
 - [ ] markets table with mock data
