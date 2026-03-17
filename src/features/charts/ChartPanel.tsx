@@ -15,6 +15,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { normalizeFxPrice } from "@/lib/fxPrice"
 import { usePythOHLC, type OhlcBar } from "@/web3/hooks/usePythOHLC"
 import { usePythPrices } from "@/web3/hooks/usePythPrices"
 import { usePyth24hChange } from "@/web3/hooks/usePyth24hChange"
@@ -24,8 +25,12 @@ import {
   DEFAULT_TIMEFRAME,
   type Timeframe,
 } from "@/web3/constants/chartConfig"
-import { FX_PAIRS } from "@/web3/constants/pairs"
 import { formatPrice, formatChange, changeDirection } from "@/lib/format"
+import { useTradingContext } from "@/contexts/TradingContext"
+import {
+  PairSelectorModal,
+  PairSelectorTrigger,
+} from "@/features/trading/PairSelectorModal"
 
 // ── Series configuration ──────────────────────────────────────────────────────
 
@@ -62,11 +67,10 @@ function toVolBars(bars: OhlcBar[]): VolBar[] {
 // ── Chart panel ───────────────────────────────────────────────────────────────
 
 export function ChartPanel() {
-  const [selectedPairIndex, setSelectedPairIndex] = useState(0)
-  const [selectedTimeframe, setSelectedTimeframe] =
-    useState<Timeframe>(DEFAULT_TIMEFRAME)
+  const { selectedPair } = useTradingContext()
+  const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe>(DEFAULT_TIMEFRAME)
+  const [pairModalOpen, setPairModalOpen] = useState(false)
 
-  const selectedPair = FX_PAIRS[selectedPairIndex]
   const benchmarkSymbol = BENCHMARK_SYMBOLS[selectedPair.symbol] ?? ""
   const feedId = selectedPair.priceFeedId
 
@@ -83,91 +87,105 @@ export function ChartPanel() {
 
   const livePrice = prices.get(normId)
   const historicalPrice = historicalPrices.get(normId)
+
+  // Normalize prices (invert USD/JPY → JPY/USD)
+  const normalizedLive = livePrice
+    ? normalizeFxPrice(livePrice.value, selectedPair)
+    : null
+  const normalizedHistorical = historicalPrice
+    ? normalizeFxPrice(historicalPrice, selectedPair)
+    : null
+
   const change24h =
-    livePrice && historicalPrice
-      ? ((livePrice.value - historicalPrice) / historicalPrice) * 100
+    normalizedLive !== null && normalizedHistorical !== null
+      ? ((normalizedLive - normalizedHistorical) / normalizedHistorical) * 100
       : null
   const direction = changeDirection(change24h)
 
   return (
-    <Card className="border-border-subtle bg-bg-panel border-top-accent">
-      {/* ── Toolbar row ── */}
-      <CardHeader className="px-4 pb-2 pt-4">
-        <div className="flex items-center justify-between gap-4">
-          {/* Pair tabs */}
-          <div className="flex items-center gap-0.5">
-            {FX_PAIRS.map((pair, i) => (
-              <button
-                key={pair.symbol}
-                onClick={() => setSelectedPairIndex(i)}
-                className={cn(
-                  "rounded-md px-2.5 py-1 font-mono text-xs tracking-wide transition-colors",
-                  i === selectedPairIndex
-                    ? "bg-brand-primary/15 text-brand-primary"
-                    : "text-text-muted hover:text-text-secondary",
-                )}
-              >
-                {pair.symbol}
-              </button>
-            ))}
-          </div>
+    <>
+      <Card className="border-border-subtle bg-bg-panel border-top-accent overflow-hidden">
+        {/* ── Toolbar row ── */}
+        <CardHeader className="px-4 pb-3 pt-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Professional Pair Selector */}
+            <PairSelectorTrigger
+              onClick={() => setPairModalOpen(true)}
+              pair={selectedPair}
+              price={normalizedLive}
+            />
 
-          {/* Timeframe selector */}
-          <div className="flex items-center rounded-lg bg-bg-elevated p-0.5">
-            {CHART_TIMEFRAMES.map((tf) => (
-              <button
-                key={tf.label}
-                onClick={() => setSelectedTimeframe(tf)}
-                className={cn(
-                  "rounded px-2.5 py-1 font-mono text-[11px] tracking-wider transition-all",
-                  tf.label === selectedTimeframe.label
-                    ? "bg-brand-primary/15 text-brand-primary font-semibold"
-                    : "text-text-muted hover:text-text-secondary",
-                )}
-              >
-                {tf.label}
-              </button>
-            ))}
+            {/* Timeframe selector */}
+            <div className="flex items-center gap-1 rounded-lg bg-bg-elevated/50 p-1">
+              {CHART_TIMEFRAMES.map((tf) => (
+                <button
+                  key={tf.label}
+                  onClick={() => setSelectedTimeframe(tf)}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 font-mono text-[11px] font-medium tracking-wider transition-all",
+                    tf.label === selectedTimeframe.label
+                      ? "bg-brand-primary text-white shadow-sm"
+                      : "text-text-muted hover:text-text-primary hover:bg-bg-elevated"
+                  )}
+                >
+                  {tf.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      {/* ── Chart area ── */}
-      <CardContent className="p-0">
-        <div className="relative h-[28rem] w-full">
-          {/* Price overlay — top-left, large, non-interactive */}
-          <div className="absolute left-4 top-3 z-10 pointer-events-none select-none">
-            {livePrice ? (
-              <div className="flex items-baseline gap-2.5">
-                <span className="font-mono text-4xl font-bold tabular-nums tracking-tight text-text-primary">
-                  {formatPrice(livePrice.value, selectedPair.displayDecimals)}
-                </span>
-                {change24h !== null && (
-                  <span
-                    className={cn(
-                      "font-mono text-sm font-semibold tabular-nums",
-                      direction === "positive" && "text-state-positive",
-                      direction === "negative" && "text-state-negative",
-                      direction === "neutral" && "text-text-muted",
+        {/* ── Chart area ── */}
+        <CardContent className="p-0">
+          <div className="relative h-[32rem] w-full">
+            {/* Price overlay — top-left, large, non-interactive */}
+            <div className="absolute left-4 top-3 z-10 pointer-events-none select-none">
+              {normalizedLive !== null ? (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-mono text-4xl font-bold tabular-nums tracking-tight text-text-primary">
+                      {formatPrice(normalizedLive, selectedPair.displayDecimals)}
+                    </span>
+                    {change24h !== null && (
+                      <span
+                        className={cn(
+                          "rounded-md px-2 py-0.5 font-mono text-sm font-semibold tabular-nums",
+                          direction === "positive" && "bg-state-positive/15 text-state-positive",
+                          direction === "negative" && "bg-state-negative/15 text-state-negative",
+                          direction === "neutral" && "bg-bg-elevated text-text-muted"
+                        )}
+                      >
+                        {formatChange(change24h)}
+                      </span>
                     )}
-                  >
-                    {formatChange(change24h)}
+                  </div>
+                  <span className="font-mono text-xs text-text-muted">
+                    24h Change
                   </span>
-                )}
-              </div>
-            ) : (
-              <div className="h-10 w-40 animate-pulse rounded-lg bg-bg-elevated" />
-            )}
-          </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="h-10 w-48 animate-pulse rounded-lg bg-bg-elevated" />
+                  <div className="h-4 w-24 animate-pulse rounded bg-bg-elevated" />
+                </div>
+              )}
+            </div>
 
-          <CandlestickChart
-            bars={bars}
-            isLoading={isLoading}
-            isError={isError}
-          />
-        </div>
-      </CardContent>
-    </Card>
+            <CandlestickChart
+              bars={bars}
+              isLoading={isLoading}
+              isError={isError}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pair Selector Modal */}
+      <PairSelectorModal
+        open={pairModalOpen}
+        onClose={() => setPairModalOpen(false)}
+      />
+    </>
   )
 }
 
@@ -199,32 +217,30 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
         fontSize: 11,
       },
       grid: {
-        // Near-invisible grid — just enough to orient the eye
-        vertLines: { color: "rgba(255,255,255,0.022)" },
-        horzLines: { color: "rgba(255,255,255,0.022)" },
+        vertLines: { color: "rgba(255,255,255,0.03)" },
+        horzLines: { color: "rgba(255,255,255,0.03)" },
       },
       crosshair: {
         horzLine: {
-          color: "rgba(255,182,221,0.45)",
+          color: "rgba(255,79,163,0.5)",
           labelBackgroundColor: "#2A1436",
           width: 1,
           style: 2,
         },
         vertLine: {
-          color: "rgba(255,182,221,0.45)",
+          color: "rgba(255,79,163,0.5)",
           labelBackgroundColor: "#2A1436",
           width: 1,
           style: 2,
         },
       },
       rightPriceScale: {
-        borderColor: "rgba(255,255,255,0.05)",
+        borderColor: "rgba(255,255,255,0.08)",
         textColor: "#A892AD",
-        // Leave room at top for the price overlay text, bottom for volume
-        scaleMargins: { top: 0.18, bottom: 0.26 },
+        scaleMargins: { top: 0.15, bottom: 0.22 },
       },
       timeScale: {
-        borderColor: "rgba(255,255,255,0.05)",
+        borderColor: "rgba(255,255,255,0.08)",
         timeVisible: true,
         secondsVisible: false,
         fixRightEdge: true,
@@ -237,7 +253,7 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
 
     volumeRef.current = chart.addSeries(HistogramSeries, VOLUME_STYLE)
     volumeRef.current.priceScale().applyOptions({
-      scaleMargins: { top: 0.82, bottom: 0 },
+      scaleMargins: { top: 0.85, bottom: 0 },
     })
 
     return () => {
@@ -262,21 +278,25 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
 
       {/* Loading skeleton */}
       {isLoading && (
-        <div className="absolute inset-0 p-6 pt-16">
-          <Skeleton className="h-full w-full rounded-none opacity-20" />
+        <div className="absolute inset-0 flex items-center justify-center bg-bg-panel/50">
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-primary border-t-transparent" />
+            <span className="font-mono text-xs text-text-muted">Loading chart data...</span>
+          </div>
         </div>
       )}
 
-      {/* Error state — subtle, not alarming */}
+      {/* Error state */}
       {isError && !isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <p className="font-mono text-xs text-text-muted">
-            Price history unavailable
-          </p>
+        <div className="absolute inset-0 flex items-center justify-center bg-bg-panel/50">
+          <div className="rounded-lg border border-state-negative/20 bg-state-negative/5 px-4 py-3 text-center">
+            <p className="font-mono text-sm text-state-negative">Chart unavailable</p>
+            <p className="mt-1 font-mono text-xs text-text-muted">Could not load price history</p>
+          </div>
         </div>
       )}
 
-      {/* Empty bars after successful load */}
+      {/* Empty bars */}
       {!isLoading && !isError && bars.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="font-mono text-xs text-text-muted">

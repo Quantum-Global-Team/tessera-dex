@@ -5,6 +5,7 @@ import { WagmiProvider } from "wagmi"
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { wagmiConfig } from "@/web3/config/wagmi"
+import { TradingProvider } from "@/contexts/TradingContext"
 
 interface ProvidersProps {
   children: ReactNode
@@ -17,6 +18,7 @@ interface ProvidersProps {
  *   WagmiProvider (config + transports)
  *   └─ QueryClientProvider (data fetching)
  *      └─ RainbowKitProvider (wallet UI)
+ *         └─ TradingProvider (selected pair state)
  *
  * QueryClient is lazily initialised via useState to avoid issues with
  * React Server Components and HMR in development.
@@ -46,7 +48,7 @@ export function Providers({ children }: ProvidersProps) {
             fontStack: "system",
           })}
         >
-          {children}
+          <TradingProvider>{children}</TradingProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

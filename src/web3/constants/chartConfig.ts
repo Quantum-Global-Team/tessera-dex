@@ -15,11 +15,14 @@ export const PYTH_BENCHMARKS_URL =
  *
  * Format: "{asset_type}.{base_currency}/{quote_currency}"
  * Verify at: https://benchmarks.pyth.network/v1/shims/tradingview/symbol_info
+ *
+ * NOTE: Pyth Benchmarks uses USD/JPY (not JPY/USD). Chart OHLC data will be
+ * in USD/JPY format and should be inverted for display if showing JPY/USD.
  */
 export const BENCHMARK_SYMBOLS: Record<string, string> = {
   "tEUR/USDC": "FX.EUR/USD",
   "tGBP/USDC": "FX.GBP/USD",
-  "tJPY/USDC": "FX.JPY/USD",
+  "tJPY/USDC": "FX.USD/JPY", // Pyth provides USD/JPY, not JPY/USD
 }
 
 /**

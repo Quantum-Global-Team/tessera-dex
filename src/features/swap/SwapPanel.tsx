@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowUpDown, Settings2, ChevronDown } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -15,12 +15,21 @@ import {
   type TokenSymbol,
 } from "@/web3/constants/tokens"
 import { TokenSelectorModal, TokenIcon } from "./TokenSelectorModal"
+import { useTradingContext } from "@/contexts/TradingContext"
 
 const ALL_SWAP_TOKENS: TokenSymbol[] = [...FX_TOKEN_SYMBOLS, QUOTE_TOKEN_SYMBOL]
 const SLIPPAGE_OPTIONS = [0.1, 0.5, 1.0]
 type ModalSide = "input" | "output" | null
 
+/** Map base currency from FX pair to token symbol */
+const BASE_TO_TOKEN: Record<string, TokenSymbol> = {
+  EUR: "tEUR",
+  GBP: "tGBP",
+  JPY: "tJPY",
+}
+
 export function SwapPanel() {
+  const { selectedPair } = useTradingContext()
   const [inputSymbol, setInputSymbol] = useState<TokenSymbol>("tEUR")
   const [outputSymbol, setOutputSymbol] = useState<TokenSymbol>("USDC")
   const [inputAmount, setInputAmount] = useState("")
@@ -30,6 +39,15 @@ export function SwapPanel() {
   const { quote } = useSwapQuote(inputSymbol, outputSymbol, inputAmount)
   const wallet = useWallet()
   const { openConnectModal } = useWalletActions()
+
+  // Sync input token with globally selected pair
+  useEffect(() => {
+    const tokenSymbol = BASE_TO_TOKEN[selectedPair.base]
+    if (tokenSymbol) {
+      setInputSymbol(tokenSymbol)
+      setOutputSymbol((prev) => (tokenSymbol === prev ? "USDC" : prev))
+    }
+  }, [selectedPair.base])
 
   function handleFlip() {
     setInputSymbol(outputSymbol)

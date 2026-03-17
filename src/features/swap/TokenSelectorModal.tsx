@@ -21,8 +21,9 @@ import type { TokenMetadata } from "@/types/token"
 const ALL_TOKENS: TokenSymbol[] = [...FX_TOKEN_SYMBOLS, QUOTE_TOKEN_SYMBOL]
 
 type AssetClass = "All" | "Fiat" | "Stable"
+type TokenAssetClass = Exclude<AssetClass, "All">
 
-const TOKEN_CLASS: Record<TokenSymbol, AssetClass> = {
+const TOKEN_CLASS: Record<TokenSymbol, TokenAssetClass> = {
   tEUR: "Fiat",
   tGBP: "Fiat",
   tJPY: "Fiat",
@@ -42,7 +43,7 @@ export const TOKEN_ICON_STYLE: Record<TokenSymbol, string> = {
   USDC: "bg-emerald-500/20 text-emerald-200 border-emerald-500/25",
 }
 
-const CLASS_BADGE: Record<Exclude<AssetClass, "All">, string> = {
+const CLASS_BADGE: Record<TokenAssetClass, string> = {
   Fiat: "bg-violet-500/10 text-violet-400",
   Stable: "bg-emerald-500/10 text-emerald-400",
 }
@@ -222,7 +223,7 @@ interface TokenRowProps {
   symbol: TokenSymbol
   token: TokenMetadata
   walletAddress: `0x${string}` | undefined
-  assetClass: Exclude<AssetClass, "All">
+  assetClass: TokenAssetClass
   isSelected: boolean
   onSelect: (symbol: TokenSymbol) => void
 }

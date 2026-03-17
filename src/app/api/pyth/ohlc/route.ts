@@ -32,6 +32,8 @@ export async function GET(request: NextRequest) {
 
     const url = `${PYTH_BENCHMARKS_URL}/v1/shims/tradingview/history?${params.toString()}`
 
+    console.log("[Pyth OHLC] Fetching:", url)
+
     const response = await fetch(url, {
       cache: "no-store",
       headers: {
@@ -40,6 +42,8 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
+      const errorText = await response.text()
+      console.error("[Pyth OHLC] Error response:", response.status, errorText)
       throw new Error(`Pyth API error: ${response.status} ${response.statusText}`)
     }
 

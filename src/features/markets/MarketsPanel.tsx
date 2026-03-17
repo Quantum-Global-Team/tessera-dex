@@ -1,40 +1,41 @@
 "use client"
 
-import { useMemo } from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { normalizeFxPrice } from "@/lib/fxPrice"
 import { usePythPrices } from "@/web3/hooks/usePythPrices"
 import { usePyth24hChange } from "@/web3/hooks/usePyth24hChange"
 import { FX_PAIRS, MARKETS_FEED_IDS } from "@/web3/constants/pairs"
 import { TOKENS } from "@/web3/constants/tokens"
-import {
-  formatPrice,
-  formatChange,
-  formatPublishTime,
-  changeDirection,
-} from "@/lib/format"
+import { formatPrice, formatChange, changeDirection } from "@/lib/format"
+import { useTradingContext } from "@/contexts/TradingContext"
 import type { FxPair } from "@/types/market"
 
-/** Map base currency → token logo symbol, e.g. "EUR" → "€" */
+/** Map base currency → token logo symbol */
 const LOGO_MAP: Record<string, string> = {
   EUR: TOKENS.tEUR.logoSymbol,
   GBP: TOKENS.tGBP.logoSymbol,
   JPY: TOKENS.tJPY.logoSymbol,
 }
 
+const LOGO_COLORS: Record<string, string> = {
+  EUR: "bg-blue-500/15 text-blue-300 border-blue-500/25",
+  GBP: "bg-violet-500/15 text-violet-300 border-violet-500/25",
+  JPY: "bg-amber-500/15 text-amber-300 border-amber-500/25",
+}
+
 export function MarketsPanel() {
+  const { selectedPair, setSelectedPairBySymbol } = useTradingContext()
+
   const {
     prices,
     isLoading: livePricesLoading,
     isError: livePricesError,
-    lastFetchedAt,
   } = usePythPrices(MARKETS_FEED_IDS)
 
-  const {
-    historicalPrices,
-    isLoading: historicalLoading,
-  } = usePyth24hChange(MARKETS_FEED_IDS)
+  const { historicalPrices, isLoading: historicalLoading } =
+    usePyth24hChange(MARKETS_FEED_IDS)
 
   const isLoading = livePricesLoading
 
@@ -45,10 +46,9 @@ export function MarketsPanel() {
           <span className="font-mono text-xs font-medium tracking-widest text-text-secondary uppercase">
             Markets
           </span>
-          <LiveIndicator
-            isError={livePricesError}
-            lastFetchedAt={lastFetchedAt}
-          />
+          <span className="font-mono text-[10px] text-text-muted">
+            {FX_PAIRS.length} pairs
+          </span>
         </div>
 
         {/* Column headers */}
@@ -80,19 +80,33 @@ export function MarketsPanel() {
               const livePrice = prices.get(normId)
               const historicalPrice = historicalPrices.get(normId)
 
+              // Normalize prices (invert USD/JPY → JPY/USD)
+              const normalizedLive = livePrice
+                ? normalizeFxPrice(livePrice.value, pair)
+                : null
+              const normalizedHistorical = historicalPrice
+                ? normalizeFxPrice(historicalPrice, pair)
+                : null
+
               const change24h =
-                livePrice && historicalPrice && !historicalLoading
-                  ? ((livePrice.value - historicalPrice) / historicalPrice) *
-                  100
+                normalizedLive !== null &&
+                normalizedHistorical !== null &&
+                !historicalLoading
+                  ? ((normalizedLive - normalizedHistorical) /
+                      normalizedHistorical) *
+                    100
                   : null
+
+              const isSelected = pair.symbol === selectedPair.symbol
 
               return (
                 <MarketRow
                   key={pair.symbol}
                   pair={pair}
-                  price={livePrice?.value ?? null}
-                  publishTime={livePrice?.publishTime ?? null}
+                  price={normalizedLive}
                   change24h={change24h}
+                  isSelected={isSelected}
+                  onSelect={() => setSelectedPairBySymbol(pair.symbol)}
                 />
               )
             })}
@@ -106,24 +120,38 @@ export function MarketsPanel() {
 interface MarketRowProps {
   pair: FxPair
   price: number | null
-  publishTime: number | null
   change24h: number | null
+  isSelected: boolean
+  onSelect: () => void
 }
 
-function MarketRow({ pair, price, publishTime, change24h }: MarketRowProps) {
+function MarketRow({
+  pair,
+  price,
+  change24h,
+  isSelected,
+  onSelect,
+}: MarketRowProps) {
   const direction = changeDirection(change24h)
 
   return (
-    <div
+    <button
+      onClick={onSelect}
       className={cn(
-        "grid grid-cols-[1fr_auto_auto] items-center gap-x-3 rounded-lg px-2 py-2.5",
-        "cursor-pointer transition-colors hover:bg-bg-elevated",
+        "grid w-full grid-cols-[1fr_auto_auto] items-center gap-x-3 rounded-lg px-2 py-2.5 text-left",
+        "transition-all",
+        isSelected
+          ? "bg-brand-primary/10 ring-1 ring-brand-primary/20"
+          : "hover:bg-bg-elevated"
       )}
     >
       {/* Pair identity */}
       <div className="flex items-center gap-2 min-w-0">
         <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-bg-elevated text-xs font-semibold text-text-secondary border border-border-subtle"
+          className={cn(
+            "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold border",
+            LOGO_COLORS[pair.base] ?? "bg-bg-elevated text-text-secondary border-border-subtle"
+          )}
           aria-hidden
         >
           {LOGO_MAP[pair.base] ?? pair.base[0]}
@@ -132,11 +160,9 @@ function MarketRow({ pair, price, publishTime, change24h }: MarketRowProps) {
           <p className="truncate font-mono text-xs font-semibold text-text-primary leading-tight">
             {pair.symbol}
           </p>
-          {publishTime !== null && (
-            <p className="font-mono text-[10px] text-text-muted leading-tight">
-              {formatPublishTime(publishTime)}
-            </p>
-          )}
+          <p className="font-mono text-[10px] text-text-muted leading-tight">
+            {pair.base}/USD
+          </p>
         </div>
       </div>
 
@@ -151,12 +177,12 @@ function MarketRow({ pair, price, publishTime, change24h }: MarketRowProps) {
           "w-16 font-mono text-xs tabular-nums text-right",
           direction === "positive" && "text-state-positive",
           direction === "negative" && "text-state-negative",
-          direction === "neutral" && "text-text-muted",
+          direction === "neutral" && "text-text-muted"
         )}
       >
         {change24h !== null ? formatChange(change24h) : "—"}
       </span>
-    </div>
+    </button>
   )
 }
 
@@ -192,38 +218,6 @@ function OracleError() {
       <p className="mt-0.5 font-mono text-[10px] text-text-muted">
         Could not reach Pyth Network
       </p>
-    </div>
-  )
-}
-
-interface LiveIndicatorProps {
-  isError: boolean
-  lastFetchedAt: Date | null
-}
-
-function LiveIndicator({ isError, lastFetchedAt }: LiveIndicatorProps) {
-  const label = useMemo(() => {
-    if (isError) return "ERROR"
-    if (!lastFetchedAt) return "CONNECTING"
-    return "LIVE"
-  }, [isError, lastFetchedAt])
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <span className="relative flex h-1.5 w-1.5">
-        {!isError && (
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-state-positive opacity-60" />
-        )}
-        <span
-          className={cn(
-            "relative inline-flex h-1.5 w-1.5 rounded-full",
-            isError ? "bg-state-negative" : "bg-state-positive",
-          )}
-        />
-      </span>
-      <span className="font-mono text-[10px] tracking-wider text-text-muted">
-        {label}
-      </span>
     </div>
   )
 }

@@ -42,7 +42,10 @@ interface UsePythOHLCResult {
  * The Pyth Benchmarks API serves TradingView UDF-compatible price history.
  * Each timeframe change triggers a new fetch.
  *
- * @param benchmarkSymbol - e.g. "FX.EUR/USD" (from BENCHMARK_SYMBOLS)
+ * NOTE: For USD/JPY pairs, the OHLC data is inverted (1/price) to convert
+ * to JPY/USD format for display.
+ *
+ * @param benchmarkSymbol - e.g. "FX.EUR/USD" or "FX.USD/JPY" (from BENCHMARK_SYMBOLS)
  * @param timeframe       - resolution + window from CHART_TIMEFRAMES
  *
  * @see https://benchmarks.pyth.network/v1/shims/tradingview/history
@@ -54,6 +57,9 @@ export function usePythOHLC(
   const [bars, setBars] = useState<OhlcBar[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+
+  // Detect if we need to invert (USD/JPY → JPY/USD)
+  const shouldInvert = benchmarkSymbol.includes("USD/JPY")
 
   const fetchBars = useCallback(async () => {
     if (!benchmarkSymbol) return
@@ -90,13 +96,30 @@ export function usePythOHLC(
         return
       }
 
-      const parsed: OhlcBar[] = data.t.map((time, i) => ({
-        time: time as UTCTimestamp,
-        open: data.o[i],
-        high: data.h[i],
-        low: data.l[i],
-        close: data.c[i],
-      }))
+      const parsed: OhlcBar[] = data.t.map((time, i) => {
+        let open = data.o[i]
+        let high = data.h[i]
+        let low = data.l[i]
+        let close = data.c[i]
+
+        // Invert USD/JPY → JPY/USD: swap high/low and invert all prices
+        if (shouldInvert) {
+          const invertedHigh = 1 / low // Inverted low becomes high
+          const invertedLow = 1 / high // Inverted high becomes low
+          open = 1 / open
+          close = 1 / close
+          high = invertedHigh
+          low = invertedLow
+        }
+
+        return {
+          time: time as UTCTimestamp,
+          open,
+          high,
+          low,
+          close,
+        }
+      })
 
       // lightweight-charts requires bars sorted ascending by time
       parsed.sort((a, b) => a.time - b.time)
@@ -108,7 +131,7 @@ export function usePythOHLC(
     } finally {
       setIsLoading(false)
     }
-  }, [benchmarkSymbol, timeframe])
+  }, [benchmarkSymbol, timeframe, shouldInvert])
 
   useEffect(() => {
     void fetchBars()

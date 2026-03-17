@@ -12,8 +12,8 @@ export const PYTH_PRICE_FEED_IDS = {
   EUR_USD: "0xa995d00bb36a63cef7fd2c287dc105fc8f3d93779f062f09551b0af3e81ec30b",
   /** GBP/USD — British Pound to US Dollar */
   GBP_USD: "0x84c2dde9633d93d1bcad84e7dc41c9d56578b7ec52fabedc1f335d673df0a7c1",
-  /** JPY/USD — Japanese Yen to US Dollar */
-  JPY_USD: "0xef2c98c804ba503c6a707e38be4dfbb16683b0f3c4dc3f35f54e4be8c2b97b8b",
+  /** USD/JPY — US Dollar to Japanese Yen (Pyth uses USD/JPY, not JPY/USD) */
+  JPY_USD: "0xef0d8b6fda2ceba41da15d4095d1da392a0d2f8ed0c6c7bc0f4cfac8c280b56d",
 } as const
 
 export type PythPriceFeedKey = keyof typeof PYTH_PRICE_FEED_IDS

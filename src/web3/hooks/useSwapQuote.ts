@@ -18,6 +18,18 @@ function normaliseFeed(id: string): string {
   return `0x${stripped.toLowerCase()}`
 }
 
+/**
+ * Normalize Pyth price for JPY (Pyth provides USD/JPY, we need JPY/USD).
+ * For EUR and GBP, the price is already in the correct format (EUR/USD, GBP/USD).
+ */
+function normalizePriceForSymbol(price: number, symbol: TokenSymbol): number {
+  // JPY uses USD/JPY feed which is inverted
+  if (symbol === "tJPY") {
+    return 1 / price
+  }
+  return price
+}
+
 export interface SwapQuote {
   /** Human-readable output token amount */
   outputAmount: string
@@ -76,15 +88,19 @@ export function useSwapQuote(
     const inputNorm = normaliseFeed(inputFeedId)
     const outputNorm = normaliseFeed(outputFeedId)
 
-    const inputPriceUSD = inputFeedId
+    let inputPriceUSD = inputFeedId
       ? (prices.get(inputNorm)?.value ?? null)
       : USDC_USD_PRICE
 
-    const outputPriceUSD = outputFeedId
+    let outputPriceUSD = outputFeedId
       ? (prices.get(outputNorm)?.value ?? null)
       : USDC_USD_PRICE
 
     if (inputPriceUSD === null || outputPriceUSD === null) return null
+
+    // Normalize prices for JPY (invert USD/JPY → JPY/USD)
+    inputPriceUSD = normalizePriceForSymbol(inputPriceUSD, inputSymbol)
+    outputPriceUSD = normalizePriceForSymbol(outputPriceUSD, outputSymbol)
 
     const rate = inputPriceUSD / outputPriceUSD
     const outputRaw = parsedInput * rate

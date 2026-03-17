@@ -5,9 +5,15 @@ import type { FxPair } from "@/types/market"
  * All FX pairs listed on PrismaFi DEX.
  *
  * Prices are quoted as "USD per 1 unit of base currency" — the same
- * convention used by Pyth Network's FX feeds.
- * e.g. tEUR/USDC price = USD cost of 1 tEUR ≈ 1.095
- *      tJPY/USDC price = USD cost of 1 tJPY ≈ 0.00666 (JPY/USD feed)
+ * convention used by Pyth Network's FX feeds for EUR/USD and GBP/USD.
+ *
+ * NOTE: For JPY, Pyth provides USD/JPY (not JPY/USD), so we invert it
+ * in the frontend to get JPY/USD. The normalizeFxPrice helper handles this.
+ *
+ * Examples after normalization:
+ *   - tEUR/USDC price ≈ 1.095 (USD per 1 EUR)
+ *   - tGBP/USDC price ≈ 1.275 (USD per 1 GBP)
+ *   - tJPY/USDC price ≈ 0.00666 (USD per 1 JPY, inverted from USD/JPY)
  */
 export const FX_PAIRS: FxPair[] = [
   {
