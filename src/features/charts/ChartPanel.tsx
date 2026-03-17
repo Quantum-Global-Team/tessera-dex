@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   createChart,
   CandlestickSeries,
@@ -11,12 +11,12 @@ import {
   type DeepPartial,
   type CandlestickSeriesOptions,
   type HistogramSeriesOptions,
+  type LogicalRange,
+  type UTCTimestamp,
 } from "lightweight-charts"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { normalizeFxPrice } from "@/lib/fxPrice"
-import { usePythOHLC, type OhlcBar } from "@/web3/hooks/usePythOHLC"
 import { usePythPrices } from "@/web3/hooks/usePythPrices"
 import { usePyth24hChange } from "@/web3/hooks/usePyth24hChange"
 import {
@@ -31,6 +31,18 @@ import {
   PairSelectorModal,
   PairSelectorTrigger,
 } from "@/features/trading/PairSelectorModal"
+
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface OhlcBar {
+  time: UTCTimestamp
+  open: number
+  high: number
+  low: number
+  close: number
+}
+
+type VolBar = { time: UTCTimestamp; value: number; color: string }
 
 // ── Series configuration ──────────────────────────────────────────────────────
 
@@ -51,17 +63,23 @@ const VOLUME_STYLE: DeepPartial<HistogramSeriesOptions> = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-type VolBar = { time: OhlcBar["time"]; value: number; color: string }
-
 function toVolBars(bars: OhlcBar[]): VolBar[] {
   return bars.map((bar) => ({
     time: bar.time,
-    value: ((bar.high - bar.low) / bar.open) * 10_000,
+    value: Math.abs((bar.high - bar.low) / bar.open) * 10_000,
     color:
       bar.close >= bar.open
         ? "rgba(46,230,166,0.25)"
         : "rgba(255,92,122,0.20)",
   }))
+}
+
+/** Compute resolution in seconds from timeframe resolution string */
+function getResolutionSeconds(resolution: string): number {
+  const num = parseInt(resolution, 10)
+  if (resolution.endsWith("D")) return 86400
+  if (resolution.endsWith("W")) return 604800
+  return num * 60 // minutes → seconds
 }
 
 // ── Chart panel ───────────────────────────────────────────────────────────────
@@ -74,10 +92,6 @@ export function ChartPanel() {
   const benchmarkSymbol = BENCHMARK_SYMBOLS[selectedPair.symbol] ?? ""
   const feedId = selectedPair.priceFeedId
 
-  const { bars, isLoading, isError } = usePythOHLC(
-    benchmarkSymbol,
-    selectedTimeframe,
-  )
   const { prices } = usePythPrices([feedId])
   const { historicalPrices } = usePyth24hChange([feedId])
 
@@ -88,7 +102,6 @@ export function ChartPanel() {
   const livePrice = prices.get(normId)
   const historicalPrice = historicalPrices.get(normId)
 
-  // Normalize prices (invert USD/JPY → JPY/USD)
   const normalizedLive = livePrice
     ? normalizeFxPrice(livePrice.value, selectedPair)
     : null
@@ -102,12 +115,15 @@ export function ChartPanel() {
       : null
   const direction = changeDirection(change24h)
 
+  // Detect if we need to invert (USD/JPY → JPY/USD)
+  const shouldInvert = benchmarkSymbol.includes("USD/JPY")
+
   return (
     <>
       <Card className="h-full border-border-subtle bg-bg-panel border-top-accent overflow-hidden flex flex-col">
         {/* ── Toolbar row ── */}
         <CardHeader className="px-4 pb-3 pt-4 shrink-0">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             {/* Professional Pair Selector */}
             <PairSelectorTrigger
               onClick={() => setPairModalOpen(true)}
@@ -138,12 +154,12 @@ export function ChartPanel() {
         {/* ── Chart area — fills remaining height ── */}
         <CardContent className="p-0 flex-1 min-h-0">
           <div className="relative h-full w-full">
-            {/* Price overlay — top-left, large, non-interactive */}
+            {/* Price overlay */}
             <div className="absolute left-4 top-3 z-10 pointer-events-none select-none">
               {normalizedLive !== null ? (
                 <div className="flex flex-col gap-1">
                   <div className="flex items-baseline gap-3">
-                    <span className="font-mono text-4xl font-bold tabular-nums tracking-tight text-text-primary">
+                    <span className="font-mono text-3xl sm:text-4xl font-bold tabular-nums tracking-tight text-text-primary">
                       {formatPrice(normalizedLive, selectedPair.displayDecimals)}
                     </span>
                     {change24h !== null && (
@@ -159,9 +175,7 @@ export function ChartPanel() {
                       </span>
                     )}
                   </div>
-                  <span className="font-mono text-xs text-text-muted">
-                    24h Change
-                  </span>
+                  <span className="font-mono text-xs text-text-muted">24h Change</span>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -171,16 +185,15 @@ export function ChartPanel() {
               )}
             </div>
 
-            <CandlestickChart
-              bars={bars}
-              isLoading={isLoading}
-              isError={isError}
+            <InfiniteScrollChart
+              benchmarkSymbol={benchmarkSymbol}
+              timeframe={selectedTimeframe}
+              shouldInvert={shouldInvert}
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Pair Selector Modal */}
       <PairSelectorModal
         open={pairModalOpen}
         onClose={() => setPairModalOpen(false)}
@@ -189,21 +202,166 @@ export function ChartPanel() {
   )
 }
 
-// ── Inner chart ───────────────────────────────────────────────────────────────
+// ── Infinite Scroll Chart ─────────────────────────────────────────────────────
 
-interface CandlestickChartProps {
-  bars: OhlcBar[]
-  isLoading: boolean
-  isError: boolean
+interface InfiniteScrollChartProps {
+  benchmarkSymbol: string
+  timeframe: Timeframe
+  shouldInvert: boolean
 }
 
-function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
+function InfiniteScrollChart({
+  benchmarkSymbol,
+  timeframe,
+  shouldInvert,
+}: InfiniteScrollChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null)
   const volumeRef = useRef<ISeriesApi<"Histogram"> | null>(null)
 
-  // Create chart once on mount
+  // All loaded bars, sorted ascending by time
+  const allBarsRef = useRef<OhlcBar[]>([])
+
+  // Track the oldest timestamp we have loaded
+  const oldestTimestampRef = useRef<number>(0)
+
+  // Track if we're currently fetching older data
+  const isFetchingRef = useRef(false)
+
+  // Loading/error state
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
+
+  // Fetch OHLC data from API
+  const fetchOHLC = useCallback(
+    async (from: number, to: number): Promise<OhlcBar[]> => {
+      const params = new URLSearchParams({
+        symbol: benchmarkSymbol,
+        resolution: timeframe.resolution,
+        from: String(from),
+        to: String(to),
+      })
+
+      const res = await fetch(`/api/pyth/ohlc?${params.toString()}`, {
+        cache: "no-store",
+      })
+
+      if (!res.ok) throw new Error("Failed to fetch OHLC")
+
+      const data = await res.json()
+
+      if (data.s !== "ok" || !data.t) return []
+
+      const bars: OhlcBar[] = data.t.map((time: number, i: number) => {
+        let open = data.o[i]
+        let high = data.h[i]
+        let low = data.l[i]
+        let close = data.c[i]
+
+        // Invert USD/JPY → JPY/USD
+        if (shouldInvert) {
+          const invertedHigh = 1 / low
+          const invertedLow = 1 / high
+          open = 1 / open
+          close = 1 / close
+          high = invertedHigh
+          low = invertedLow
+        }
+
+        return { time: time as UTCTimestamp, open, high, low, close }
+      })
+
+      // Sort ascending
+      bars.sort((a, b) => a.time - b.time)
+      return bars
+    },
+    [benchmarkSymbol, timeframe.resolution, shouldInvert]
+  )
+
+  // Load initial data
+  useEffect(() => {
+    if (!benchmarkSymbol) return
+
+    setIsLoading(true)
+    setIsError(false)
+    allBarsRef.current = []
+    oldestTimestampRef.current = 0
+
+    const now = Math.floor(Date.now() / 1000)
+    const initialWindow = timeframe.windowSeconds
+
+    fetchOHLC(now - initialWindow, now)
+      .then((bars) => {
+        if (bars.length > 0) {
+          allBarsRef.current = bars
+          oldestTimestampRef.current = bars[0].time
+
+          if (seriesRef.current && volumeRef.current) {
+            seriesRef.current.setData(bars)
+            volumeRef.current.setData(toVolBars(bars))
+
+            // Show last 100 candles initially
+            const timeScale = chartRef.current?.timeScale()
+            if (timeScale && bars.length > 100) {
+              const lastBar = bars[bars.length - 1]
+              const startBar = bars[bars.length - 100]
+              timeScale.setVisibleRange({ from: startBar.time, to: lastBar.time })
+            } else {
+              timeScale?.fitContent()
+            }
+          }
+        }
+        setIsLoading(false)
+      })
+      .catch(() => {
+        setIsError(true)
+        setIsLoading(false)
+      })
+  }, [benchmarkSymbol, timeframe, fetchOHLC])
+
+  // Fetch older data when user scrolls to the left
+  const loadOlderData = useCallback(async () => {
+    if (isFetchingRef.current || !benchmarkSymbol) return
+    if (oldestTimestampRef.current === 0) return
+
+    isFetchingRef.current = true
+
+    const resolutionSecs = getResolutionSeconds(timeframe.resolution)
+    // Fetch 500 more candles worth of data
+    const chunkSeconds = 500 * resolutionSecs
+    const to = oldestTimestampRef.current - 1
+    const from = to - chunkSeconds
+
+    try {
+      const olderBars = await fetchOHLC(from, to)
+
+      if (olderBars.length > 0) {
+        // Filter out duplicates
+        const existingTimes = new Set(allBarsRef.current.map((b) => b.time))
+        const newBars = olderBars.filter((b) => !existingTimes.has(b.time))
+
+        if (newBars.length > 0) {
+          // Prepend older bars
+          allBarsRef.current = [...newBars, ...allBarsRef.current]
+          allBarsRef.current.sort((a, b) => a.time - b.time)
+          oldestTimestampRef.current = allBarsRef.current[0].time
+
+          // Update chart
+          if (seriesRef.current && volumeRef.current) {
+            seriesRef.current.setData(allBarsRef.current)
+            volumeRef.current.setData(toVolBars(allBarsRef.current))
+          }
+        }
+      }
+    } catch {
+      // Silently fail - user can try scrolling again
+    } finally {
+      isFetchingRef.current = false
+    }
+  }, [benchmarkSymbol, timeframe.resolution, fetchOHLC])
+
+  // Create chart and subscribe to visible range changes
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -253,53 +411,44 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
     })
 
     chartRef.current = chart
-
     seriesRef.current = chart.addSeries(CandlestickSeries, CANDLE_STYLE)
-
     volumeRef.current = chart.addSeries(HistogramSeries, VOLUME_STYLE)
     volumeRef.current.priceScale().applyOptions({
       scaleMargins: { top: 0.82, bottom: 0 },
     })
 
+    // Subscribe to visible logical range changes for infinite scroll
+    const handleVisibleRangeChange = (range: LogicalRange | null) => {
+      if (!range) return
+
+      // If user scrolled to near the left edge (within 20 bars of oldest data),
+      // load more older data
+      if (range.from < 20 && allBarsRef.current.length > 0) {
+        loadOlderData()
+      }
+    }
+
+    chart.timeScale().subscribeVisibleLogicalRangeChange(handleVisibleRangeChange)
+
     return () => {
+      chart.timeScale().unsubscribeVisibleLogicalRangeChange(handleVisibleRangeChange)
       chart.remove()
       chartRef.current = null
       seriesRef.current = null
       volumeRef.current = null
     }
-  }, [])
-
-  // Update data when bars change
-  useEffect(() => {
-    if (!seriesRef.current || !volumeRef.current || bars.length === 0) return
-    seriesRef.current.setData(bars)
-    volumeRef.current.setData(toVolBars(bars))
-
-    // Set visible range to show last 100 candles by default
-    // User can zoom out/scroll to see full history
-    const timeScale = chartRef.current?.timeScale()
-    if (timeScale && bars.length > 100) {
-      const lastBar = bars[bars.length - 1]
-      const startBar = bars[bars.length - 100]
-      timeScale.setVisibleRange({
-        from: startBar.time,
-        to: lastBar.time,
-      })
-    } else {
-      timeScale?.fitContent()
-    }
-  }, [bars])
+  }, [loadOlderData])
 
   return (
     <div className="absolute inset-0">
       <div ref={containerRef} className="h-full w-full" />
 
-      {/* Loading skeleton */}
+      {/* Loading state */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-bg-panel/50">
           <div className="flex flex-col items-center gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-primary border-t-transparent" />
-            <span className="font-mono text-xs text-text-muted">Loading chart data...</span>
+            <span className="font-mono text-xs text-text-muted">Loading chart...</span>
           </div>
         </div>
       )}
@@ -314,12 +463,10 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
         </div>
       )}
 
-      {/* Empty bars */}
-      {!isLoading && !isError && bars.length === 0 && (
+      {/* Empty state */}
+      {!isLoading && !isError && allBarsRef.current.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="font-mono text-xs text-text-muted">
-            No data for this timeframe
-          </p>
+          <p className="font-mono text-xs text-text-muted">No data for this timeframe</p>
         </div>
       )}
     </div>
