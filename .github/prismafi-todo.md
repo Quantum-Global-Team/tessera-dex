@@ -1,8 +1,8 @@
-# TODO — Tessera DEX
+# TODO — PrismaFi DEX
 
 Institutional-grade tokenized Forex DEX built for the Polkadot EVM hackathon track.
 
-Repository: `tessera-dex`
+Repository: `prismafi-dex`
 
 ---
 
@@ -73,7 +73,7 @@ The agent must not mark any item complete if:
 ## 1. Product definition
 
 ### 1.1 Vision
-Build **Tessera** — a tokenized Forex DEX on Polkadot EVM where users can trade synthetic fiat assets such as `tEUR`, `tJPY`, and `tGBP` against stablecoins through a professional institutional-grade interface.
+Build **PrismaFi** — a tokenized Forex DEX on Polkadot EVM where users can trade synthetic fiat assets such as `tEUR`, `tJPY`, and `tGBP` against stablecoins through a professional institutional-grade interface.
 
 ### 1.2 Core MVP
 The MVP is complete when:
@@ -83,7 +83,7 @@ The MVP is complete when:
 - [ ] user can execute a basic swap flow
 - [ ] user can see balances before and after swap
 - [ ] user can see transaction state and feedback
-- [ ] app is consistently styled in the Tessera Rose Liquid Glass design system
+- [ ] app is consistently styled in the PrismaFi Rose Liquid Glass design system
 - [ ] repository is documented and demo-ready
 
 ### 1.3 Product principles
@@ -232,7 +232,7 @@ src/
 ## 5. Rose Liquid Glass design system
 
 ### 5.1 Brand identity
-- [x] lock product name as `Tessera`
+- [x] lock product name as `PrismaFi`
 - [ ] define one-line tagline
 - [ ] define concise product subtitle
 - [ ] define brand tone: premium, glossy, modern, feminine but sharp
@@ -293,7 +293,7 @@ src/
 - [x] define content width constraints
 
 ### 6.2 Top navigation
-- [x] Tessera logo area
+- [x] PrismaFi logo area
 - [x] network status
 - [x] wallet connect area
 - [ ] market overview quick stats
@@ -735,7 +735,7 @@ src/
 
 ## 20. Definition of done
 
-Tessera is ready for hackathon submission when:
+PrismaFi is ready for hackathon submission when:
 - [ ] the app is clean, coherent, and institutional in presentation
 - [ ] the core swap story works end-to-end
 - [ ] the repository looks professional and structured

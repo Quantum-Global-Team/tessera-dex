@@ -69,7 +69,7 @@ function NetworkStatus() {
         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-state-positive" />
       </span>
       <span className="font-mono text-[11px] tracking-wider text-text-muted">
-        MOONBEAM
+        Live
       </span>
     </div>
   )
