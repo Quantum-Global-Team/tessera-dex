@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { ConnectButton } from "@rainbow-me/rainbowkit"
 
 import { NAV_ITEMS } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 
 export function Header() {
   const pathname = usePathname()
@@ -45,15 +45,83 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right: Wallet only */}
+        {/* Right: RainbowKit Wallet Connection */}
         <div className="ml-auto">
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-brand-primary/40 font-mono text-xs tracking-wider text-brand-primary uppercase hover:border-brand-primary hover:bg-brand-primary/10 hover:text-brand-primary glow-brand-sm"
-          >
-            Connect Wallet
-          </Button>
+          <ConnectButton.Custom>
+            {({
+              account,
+              chain,
+              openAccountModal,
+              openChainModal,
+              openConnectModal,
+              mounted,
+            }) => {
+              const ready = mounted
+              const connected = ready && account && chain
+
+              return (
+                <div
+                  {...(!ready && {
+                    "aria-hidden": true,
+                    style: {
+                      opacity: 0,
+                      pointerEvents: "none",
+                      userSelect: "none",
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!connected) {
+                      return (
+                        <button
+                          onClick={openConnectModal}
+                          className="rounded-lg border border-brand-primary/40 px-4 py-2 font-mono text-xs tracking-wider text-brand-primary uppercase transition-all hover:border-brand-primary hover:bg-brand-primary/10 glow-brand-sm"
+                        >
+                          Connect Wallet
+                        </button>
+                      )
+                    }
+
+                    if (chain.unsupported) {
+                      return (
+                        <button
+                          onClick={openChainModal}
+                          className="rounded-lg border border-state-negative/40 px-4 py-2 font-mono text-xs tracking-wider text-state-negative uppercase transition-all hover:border-state-negative hover:bg-state-negative/10"
+                        >
+                          Wrong Network
+                        </button>
+                      )
+                    }
+
+                    return (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={openChainModal}
+                          className="flex items-center gap-1.5 rounded-lg border border-border-subtle px-3 py-2 font-mono text-[10px] text-text-secondary transition-all hover:border-border-strong hover:text-text-primary"
+                        >
+                          {chain.hasIcon && chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? "Chain icon"}
+                              src={chain.iconUrl}
+                              className="h-4 w-4 rounded-full"
+                            />
+                          )}
+                          {chain.name}
+                        </button>
+
+                        <button
+                          onClick={openAccountModal}
+                          className="rounded-lg border border-brand-primary/40 px-4 py-2 font-mono text-xs tracking-wider text-brand-primary transition-all hover:border-brand-primary hover:bg-brand-primary/10 glow-brand-sm"
+                        >
+                          {account.displayName}
+                        </button>
+                      </div>
+                    )
+                  })()}
+                </div>
+              )
+            }}
+          </ConnectButton.Custom>
         </div>
       </div>
     </header>

@@ -104,9 +104,9 @@ export function ChartPanel() {
 
   return (
     <>
-      <Card className="border-border-subtle bg-bg-panel border-top-accent overflow-hidden">
+      <Card className="h-full border-border-subtle bg-bg-panel border-top-accent overflow-hidden flex flex-col">
         {/* ── Toolbar row ── */}
-        <CardHeader className="px-4 pb-3 pt-4">
+        <CardHeader className="px-4 pb-3 pt-4 shrink-0">
           <div className="flex items-center justify-between gap-4">
             {/* Professional Pair Selector */}
             <PairSelectorTrigger
@@ -135,9 +135,9 @@ export function ChartPanel() {
           </div>
         </CardHeader>
 
-        {/* ── Chart area ── */}
-        <CardContent className="p-0">
-          <div className="relative h-[32rem] w-full">
+        {/* ── Chart area — fills remaining height ── */}
+        <CardContent className="p-0 flex-1 min-h-0">
+          <div className="relative h-full w-full">
             {/* Price overlay — top-left, large, non-interactive */}
             <div className="absolute left-4 top-3 z-10 pointer-events-none select-none">
               {normalizedLive !== null ? (
@@ -210,6 +210,10 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
 
     const chart = createChart(el, {
       autoSize: true,
+      localization: {
+        locale: "en-US",
+        dateFormat: "yyyy-MM-dd",
+      },
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
         textColor: "#A892AD",
@@ -237,13 +241,14 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
       rightPriceScale: {
         borderColor: "rgba(255,255,255,0.08)",
         textColor: "#A892AD",
-        scaleMargins: { top: 0.15, bottom: 0.22 },
+        scaleMargins: { top: 0.12, bottom: 0.18 },
       },
       timeScale: {
         borderColor: "rgba(255,255,255,0.08)",
         timeVisible: true,
         secondsVisible: false,
-        fixRightEdge: true,
+        fixRightEdge: false,
+        fixLeftEdge: false,
       },
     })
 
@@ -253,7 +258,7 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
 
     volumeRef.current = chart.addSeries(HistogramSeries, VOLUME_STYLE)
     volumeRef.current.priceScale().applyOptions({
-      scaleMargins: { top: 0.85, bottom: 0 },
+      scaleMargins: { top: 0.82, bottom: 0 },
     })
 
     return () => {
@@ -269,7 +274,20 @@ function CandlestickChart({ bars, isLoading, isError }: CandlestickChartProps) {
     if (!seriesRef.current || !volumeRef.current || bars.length === 0) return
     seriesRef.current.setData(bars)
     volumeRef.current.setData(toVolBars(bars))
-    chartRef.current?.timeScale().fitContent()
+
+    // Set visible range to show last 100 candles by default
+    // User can zoom out/scroll to see full history
+    const timeScale = chartRef.current?.timeScale()
+    if (timeScale && bars.length > 100) {
+      const lastBar = bars[bars.length - 1]
+      const startBar = bars[bars.length - 100]
+      timeScale.setVisibleRange({
+        from: startBar.time,
+        to: lastBar.time,
+      })
+    } else {
+      timeScale?.fitContent()
+    }
   }, [bars])
 
   return (
