@@ -402,37 +402,37 @@ src/
 ## 10. Swap feature
 
 ### 10.1 Swap domain model
-- [ ] define swap form state
-- [ ] define selected input token
-- [ ] define selected output token
-- [ ] define amount state
-- [ ] define quote state
+- [x] define swap form state
+- [x] define selected input token
+- [x] define selected output token
+- [x] define amount state
+- [x] define quote state
 - [ ] define fee state
 - [ ] define approval state
 - [ ] define execution state
 
 ### 10.2 Swap UI
-- [ ] create swap card
-- [ ] create amount input
-- [ ] create token selector
-- [ ] create pair switch action
-- [ ] create quote preview row
-- [ ] create fee preview row
-- [ ] create slippage row
-- [ ] create CTA area
+- [x] create swap card
+- [x] create amount input
+- [x] create token selector
+- [x] create pair switch action
+- [x] create quote preview row
+- [x] create fee preview row
+- [x] create slippage row
+- [x] create CTA area
 - [ ] create pending/success/error feedback
 
 ### 10.3 Swap validation
-- [ ] prevent zero amount
-- [ ] prevent same token pair
+- [x] prevent zero amount
+- [x] prevent same token pair
 - [ ] handle insufficient balance
-- [ ] handle missing wallet
+- [x] handle missing wallet
 - [ ] handle unsupported network
 - [ ] handle stale quote
 - [ ] handle approval requirement
 
 ### 10.4 Swap integration
-- [ ] implement quote fetching
+- [x] implement quote fetching
 - [ ] implement approval flow
 - [ ] implement swap write flow
 - [ ] implement transaction receipt handling
