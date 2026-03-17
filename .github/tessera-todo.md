@@ -312,26 +312,26 @@ src/
 ## 7. Web3 configuration
 
 ### 7.1 Chain configuration
-- [ ] configure target Polkadot EVM-compatible network
-- [ ] define chain metadata
-- [ ] define RPC configuration
-- [ ] define block explorer links
+- [x] configure target Polkadot EVM-compatible network
+- [x] define chain metadata
+- [x] define RPC configuration
+- [x] define block explorer links
 - [ ] define unsupported network state
 
 ### 7.2 Wallet setup
-- [ ] integrate RainbowKit
-- [ ] configure wallet connectors
-- [ ] connect wallet flow
-- [ ] disconnect flow
-- [ ] wallet reconnect on refresh
+- [x] integrate RainbowKit
+- [x] configure wallet connectors
+- [x] connect wallet flow
+- [x] disconnect flow
+- [x] wallet reconnect on refresh
 - [ ] unsupported network warning
 - [ ] empty wallet state
 
 ### 7.3 Web3 adapter layer
-- [ ] create `src/web3/config`
-- [ ] create `src/web3/abis`
-- [ ] create `src/web3/constants`
-- [ ] create `src/web3/hooks`
+- [x] create `src/web3/config`
+- [x] create `src/web3/abis`
+- [x] create `src/web3/constants`
+- [x] create `src/web3/hooks`
 - [ ] create typed contract config objects
 - [ ] isolate all contract reads/writes behind custom hooks
 

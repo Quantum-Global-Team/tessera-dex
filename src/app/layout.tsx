@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Inter, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
+import "@rainbow-me/rainbowkit/styles.css"
+import { Providers } from "./providers"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AppShell } from "@/components/layout/AppShell"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -35,11 +37,13 @@ export default function RootLayout({
           "font-sans",
         )}
       >
-        <ThemeProvider>
-          <TooltipProvider>
-            <AppShell>{children}</AppShell>
-          </TooltipProvider>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider>
+            <TooltipProvider>
+              <AppShell>{children}</AppShell>
+            </TooltipProvider>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )
