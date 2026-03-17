@@ -11,7 +11,7 @@ export const PYTH_BENCHMARKS_URL =
   "https://benchmarks.pyth.network"
 
 /**
- * Mapping from Tessera pair symbol to Pyth Benchmarks symbol identifier.
+ * Mapping from PrismaFi pair symbol to Pyth Benchmarks symbol identifier.
  *
  * Format: "{asset_type}.{base_currency}/{quote_currency}"
  * Verify at: https://benchmarks.pyth.network/v1/shims/tradingview/symbol_info

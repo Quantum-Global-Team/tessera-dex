@@ -1,10 +1,10 @@
 /**
- * Metadata for a single ERC-20 token supported by Tessera DEX.
+ * Metadata for a single ERC-20 token supported by PrismaFi DEX.
  */
 export interface TokenMetadata {
   /** On-chain symbol, e.g. "tEUR" */
   symbol: string
-  /** Full display name, e.g. "Tessera Euro" */
+  /** Full display name, e.g. "Prisma Euro" */
   name: string
   /** ERC-20 token decimals */
   decimals: number

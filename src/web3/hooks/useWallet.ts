@@ -8,7 +8,7 @@ export interface WalletState {
   isConnected: boolean
   isConnecting: boolean
   chainId: number | undefined
-  /** True when the connected wallet is on the Tessera target network. */
+  /** True when the connected wallet is on the PrismaFi target network. */
   isCorrectNetwork: boolean
 }
 

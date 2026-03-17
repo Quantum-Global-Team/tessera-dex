@@ -7,7 +7,7 @@ import { moonbaseAlpha } from "./chains"
  * ssr: true is required for Next.js App Router.
  */
 export const wagmiConfig = getDefaultConfig({
-  appName: "Tessera DEX",
+  appName: "PrismaFi DEX",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "",
   chains: [moonbaseAlpha],
   ssr: true,

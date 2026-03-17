@@ -2,7 +2,7 @@ import { PYTH_PRICE_FEED_IDS } from "./priceFeedIds"
 import type { FxPair } from "@/types/market"
 
 /**
- * All FX pairs listed on Tessera DEX.
+ * All FX pairs listed on PrismaFi DEX.
  *
  * Prices are quoted as "USD per 1 unit of base currency" — the same
  * convention used by Pyth Network's FX feeds.

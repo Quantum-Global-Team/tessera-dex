@@ -45,7 +45,7 @@ export interface FxPrice {
   publishTime: number
 }
 
-/** A tradeable Forex pair offered by Tessera (e.g. tEUR/USDC). */
+/** A tradeable Forex pair offered by PrismaFi (e.g. tEUR/USDC). */
 export interface FxPair {
   /** Trading symbol shown in the UI, e.g. "tEUR/USDC" */
   symbol: string

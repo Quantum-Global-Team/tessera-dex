@@ -13,9 +13,9 @@ const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const fontMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const metadata: Metadata = {
-  title: "Tessera — Institutional Forex DEX",
+  title: "PrismaFi — Institutional Forex DEX",
   description:
-    "Trade tokenized fiat assets with institutional precision. Tessera brings TradFi-grade forex to the Polkadot EVM.",
+    "Trade tokenized fiat assets with institutional precision. PrismaFi brings TradFi-grade forex to the Polkadot EVM.",
 }
 
 export default function RootLayout({

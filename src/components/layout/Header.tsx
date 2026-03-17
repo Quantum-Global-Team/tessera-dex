@@ -16,7 +16,7 @@ export function Header() {
         {/* Wordmark */}
         <Link href="/" className="flex shrink-0 items-center gap-3">
           <span className="font-mono text-sm font-bold tracking-[0.18em] text-text-primary uppercase">
-            Tessera
+            PrismaFi
           </span>
           <span className="hidden font-mono text-[10px] tracking-widest text-text-muted sm:block">
             FOREX DEX

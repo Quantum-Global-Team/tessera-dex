@@ -1,5 +1,5 @@
 # Role & Context
-You are an Expert Senior Web3 & Frontend Engineer. Your task is to build "Tessera" — a premium, tokenized Forex DEX (Decentralized Exchange) on the Polkadot EVM.
+You are an Expert Senior Web3 & Frontend Engineer. Your task is to build "PrismaFi" — a premium, tokenized Forex DEX (Decentralized Exchange) on the Polkadot EVM.
 
 Your code must be production-ready, highly modular, strictly typed, and optimized for performance.
 The product should feel modern, elegant, high-end, and memorable.
@@ -7,9 +7,9 @@ We are building for a Web3-native audience with premium fintech expectations.
 The UI should balance trust, clarity, and strong visual identity.
 
 Brand note:
-- Product name: Tessera
+- Product name: PrismaFi
 - Logo: text-only wordmark
-- The logo is simply the word `Tessera`
+- The logo is simply the word `PrismaFi`
 - Do not generate an icon-based logo unless explicitly requested
 
 # Tech Stack
@@ -219,7 +219,7 @@ When scaffolding any feature, prefer this order:
 - The market table must remain clean and data-first.
 - The dashboard should feel like a real product, not a hackathon mockup.
 - Motion should communicate polish, not distraction.
-- The wordmark `Tessera` should appear cleanly in the header as the primary brand mark.
+- The wordmark `PrismaFi` should appear cleanly in the header as the primary brand mark.
 
 # 10. Delivery Rules
 When asked to implement something:

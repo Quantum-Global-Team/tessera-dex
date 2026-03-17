@@ -1,7 +1,7 @@
 import type { Address } from "viem"
 
 /**
- * Deployed smart contract addresses for Tessera DEX on Moonbase Alpha.
+ * Deployed smart contract addresses for PrismaFi DEX on Moonbase Alpha.
  *
  * All values are null until contracts are deployed via Foundry scripts.
  * After deployment, paste the verified addresses here.
@@ -11,7 +11,7 @@ import type { Address } from "viem"
  */
 export const CONTRACTS = {
   /** Main DEX router — executes FX token swaps */
-  TesseraRouter: null as Address | null,
+  PrismaRouter: null as Address | null,
   /** Mock stablecoin (USDC equivalent for testnet) */
   MockUSDC: null as Address | null,
   /** Synthetic EUR token */

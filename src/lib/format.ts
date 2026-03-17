@@ -1,5 +1,5 @@
 /**
- * Tessera DEX — display formatting utilities.
+ * PrismaFi DEX — display formatting utilities.
  * All functions are pure and side-effect free.
  */
 

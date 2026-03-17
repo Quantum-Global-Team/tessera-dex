@@ -6,7 +6,7 @@
 
 /* ─── Rose Liquid Glass Design Tokens ──────────────────────────────────────── */
 :root {
-  /* Tessera semantic tokens — Rose Liquid Glass */
+  /* PrismaFi semantic tokens — Rose Liquid Glass */
 
   /* Backgrounds */
   --bg-primary: #0F0A14;
@@ -78,7 +78,7 @@
 @theme inline {
   --font-sans: var(--font-sans);
 
-  /* Tessera semantic utilities */
+  /* PrismaFi semantic utilities */
   --color-bg-primary: var(--bg-primary);
   --color-bg-secondary: var(--bg-secondary);
   --color-bg-panel: var(--bg-panel);
